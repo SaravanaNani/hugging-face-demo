@@ -21,14 +21,32 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Check for changes
+        run: |
+          git status
+          git log --oneline
+
       - name: Force Push to Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HG }}
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
+          # Set default Git user name and email (you can customize these if needed)
+          git config user.name "saravanaNani"
+          git config user.email "saravana0805200@gmail.com"
+
+          # Add Hugging Face remote
           git remote add space https://huggingface.co/spaces/SaravannNani/demo2.git || echo "Remote already exists"
+
+          # Fetch the remote 'main' branch
           git fetch space main || echo "No previous commits in remote"
+
+          # Reset to match the remote branch's state
           git reset --hard space/main || echo "No hard reset possible"
+
+          # Make sure we add any new changes
           git reset --soft FETCH_HEAD
+          git add .
+          git commit -m "Deploying changes to Hugging Face" || echo "No changes to commit"
+
+          # Force push changes to Hugging Face Space
           git push --force https://SaravannNani:${{ secrets.HG }}@huggingface.co/spaces/SaravannNani/demo2.git main
