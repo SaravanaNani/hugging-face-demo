@@ -29,5 +29,5 @@ jobs:
           git config user.email "actions@github.com"
           git remote add space https://huggingface.co/spaces/SaravannNani/demo2.git
           git fetch space main
-          git merge --allow-unrelated-histories space/main
-          git push https://SaravannNani:${{ secrets.HG }}@huggingface.co/spaces/SaravannNani/demo2.git main
+          git reset --hard space/main
+          git push --force https://SaravannNani:${{ secrets.HG }}@huggingface.co/spaces/SaravannNani/demo2.git main
