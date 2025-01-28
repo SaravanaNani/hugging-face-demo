@@ -34,19 +34,24 @@ jobs:
           git config user.name "saravanaNani"
           git config user.email "saravana0805200@gmail.com"
 
-          # Add Hugging Face remote
+          # Add Hugging Face remote (only add if not already exists)
           git remote add space https://huggingface.co/spaces/SaravannNani/demo2.git || echo "Remote already exists"
 
-          # Fetch the remote 'main' branch
+          # Fetch the remote 'main' branch (only fetch if needed)
           git fetch space main || echo "No previous commits in remote"
 
-          # Reset to match the remote branch's state
+          # Reset to match the remote branch's state (if the reset is possible)
           git reset --hard space/main || echo "No hard reset possible"
 
-          # Make sure we add any new changes
+          # Ensure we're adding new changes
           git reset --soft FETCH_HEAD
+
+          # Check if there are changes to commit
+          git diff --exit-code || echo "Changes detected, proceeding to commit."
+
+          # Stage and commit changes (only if there are changes)
           git add .
           git commit -m "Deploying changes to Hugging Face" || echo "No changes to commit"
 
-          # Force push changes to Hugging Face Space
-          git push --force https://SaravannNani:${{ secrets.HG }}@huggingface.co/spaces/SaravannNani/demo2.git main
+          # Only force push if there were commits
+          git push --force https://SaravannNani:${{ secrets.HG }}@huggingface.co/spaces/SaravannNani/demo2.git main || echo "No changes to push"
